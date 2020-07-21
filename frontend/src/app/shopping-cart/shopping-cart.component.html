@@ -1,0 +1,47 @@
+<form [formGroup]="itemTable">
+    <table class="table table-border">
+        <thead class="text-nowrap">
+            <th>Name</th>
+            <th>Price</th>
+            <th></th>
+        </thead>
+        <tbody>
+            <ng-container formArrayName="tableRows" *ngFor="let group of formControls.controls; let i=index">
+                <tr *ngIf="group.get('isEditable').value" [formGroupName]="i">
+                    <td>
+                        <mat-form-field>
+                            <input matNativeControl type="text" formControlName="name">
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field>
+                            <input matNativeControl type="number" min=0 formControlName="price">
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-icon class="delete" (click)="deleteRow(i)">delete</mat-icon>
+                        <mat-icon class="done" (click)="confirmRow(group)">done</mat-icon>
+                    </td>
+                </tr>
+                <tr *ngIf="!group.get('isEditable').value">
+                    <td>
+                        {{group.get('name').value}}
+                    </td>
+                    <td>
+                        {{group.get('price').value | currency}}
+                    </td>
+                    <td>
+                        <mat-icon class="edit" (click)="editRow(group)">edit</mat-icon>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+    <div class="action-container">
+        <button mat-raised-button type="submit" (click)="addRow()">Add row</button>
+        <button mat-raised-button [disabled]="itemTable.invalid" type="submit" (click)="submitForm()">Submit</button>
+    </div>
+</form>
+<div class="output">
+    <p>Subtotal: {{subtotal | currency}}</p>
+</div>
